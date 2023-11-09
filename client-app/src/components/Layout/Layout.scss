@@ -1,0 +1,23 @@
+.layout__container{
+    display: flex;
+    height: 100%;
+
+    .content{
+       flex: 1;
+
+        .main{
+            padding: 20px 30px;
+        }
+
+        .header{
+            height: 46px;
+            text-align: right;
+
+            span{
+                line-height: 46px;
+                cursor: pointer;
+                padding-right: 30px;
+            }
+        }
+    }
+}

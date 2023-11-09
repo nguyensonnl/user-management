@@ -1,0 +1,48 @@
+.sidebar__container {
+  width: 290px;
+  min-height: 100vh;
+  background-color: #1f2937;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .sidebar__content {
+    .logo {
+      color: #fff;
+      font-size: 2.6rem;
+      font-weight: 600;
+    }
+
+    .list__group {
+      margin-top: 20px;
+      list-style-type: none;
+      padding-left: 0;
+      margin-bottom: 0;
+
+      .item__link {
+        background-color: transparent;
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 4px;
+        display: flex;
+        color: #9ca3af;
+        text-decoration: none;
+        font-size: 1.8rem;
+        font-weight: 500;
+
+        &:hover {
+          color: #fff;
+        }
+      }
+
+      .active {
+        background-color: #000;
+        color: #fff;
+        border-radius: 6px;
+      }
+    }
+  }
+}

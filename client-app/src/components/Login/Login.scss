@@ -1,0 +1,115 @@
+.login__page {
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 20px;
+  padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__title {
+    font-size: 3.2rem;
+    margin-bottom: 30px;
+  }
+
+  &__content {
+    background-color: #fff;
+    padding: 40px 36px;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.8);
+
+    .form__login {
+      display: flex;
+      flex-direction: column;
+
+      .form__group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+
+        label {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-bottom: 6px;
+        }
+        .item__input {
+          width: 100%;
+
+          input {
+            width: 100%;
+            outline: none;
+            border: 2px solid #ddd;
+            padding: 6px 10px;
+            border-radius: 10px;
+
+            &:focus {
+              border: 2px solid #e13f5e;
+            }
+          }
+        }
+      }
+
+      .action {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .item {
+          width: 50%;
+        }
+
+        .remember {
+          span {
+            padding-left: 6px;
+            font-weight: 600;
+            font-size: 1.5rem;
+          }
+        }
+
+        .forgot__password {
+          text-align: right;
+
+          .link {
+            color: #e13f5e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+
+    button {
+      font-size: 1.5rem;
+      font-weight: 500;
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .create__account {
+      background-color: #fff;
+      border: 1px solid #ccc;
+
+      &:hover {
+        background-color: #eee;
+      }
+    }
+
+    .other {
+      text-align: center;
+      margin: 20px 0;
+      color: #aaa;
+    }
+
+    .btn-login {
+      background-color: #e13f5e;
+      border: none;
+      color: #fff;
+    }
+  }
+}
