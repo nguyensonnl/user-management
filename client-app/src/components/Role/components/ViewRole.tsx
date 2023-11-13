@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 interface IProps {
   listRole?: any;
   onUpdate?: any;
@@ -12,6 +14,16 @@ const ViewRole = (props: IProps) => {
 
   return (
     <div className="list__role">
+      <div className="list__role__heading">
+        <div className="limit-show">
+          <select>
+            <option>10</option>
+            <option>20</option>
+            <option>50</option>
+          </select>
+        </div>
+        <input type="text" placeholder="search..." className="search-table" />
+      </div>
       <table className="table">
         <thead>
           <tr>
@@ -31,8 +43,8 @@ const ViewRole = (props: IProps) => {
                 <td>{index + 1}</td>
                 <td>{item.name}</td>
                 <td>{item.description}</td>
-                <td>{item.createdAt}</td>
-                <td>{item.updatedAt}</td>
+                <td>{dayjs(item.createdAt).format("DD-MM-YYYY HH:mm:ss")}</td>
+                <td>{dayjs(item.updatedAt).format("DD-MM-YYYY HH:mm:ss")}</td>
                 <td>
                   <button
                     className="btn btn-success"
@@ -46,6 +58,37 @@ const ViewRole = (props: IProps) => {
             ))}
         </tbody>
       </table>
+      <div className="list__role__footer">
+        <nav aria-label="Page navigation example">
+          <ul className="pagination">
+            <li className="page-item">
+              <a className="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li className="page-item">
+              <a className="page-link" href="#">
+                1
+              </a>
+            </li>
+            <li className="page-item">
+              <a className="page-link" href="#">
+                2
+              </a>
+            </li>
+            <li className="page-item">
+              <a className="page-link" href="#">
+                3
+              </a>
+            </li>
+            <li className="page-item">
+              <a className="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
   );
 };

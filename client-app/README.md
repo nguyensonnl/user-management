@@ -21,3 +21,7 @@
 ### Authorization
 
 - Role based access control
+
+### Handle access
+
+- Sử dụng thông báo

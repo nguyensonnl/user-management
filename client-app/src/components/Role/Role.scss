@@ -36,16 +36,40 @@
 }
 
 .role__page {
-  .role__content {
+  .role__heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #fff;
-    padding: 20px;
+    padding: 10px 20px;
     border-radius: 8px;
-    box-shadow: 2px 0px 0px 2px rgba(0, 0, 0, 0.01);
+    margin-bottom: 20px;
+  }
+  .list__role {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px 20px;
 
-    .role__heading {
+    &__heading {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+
+      .search-table {
+        width: 100%;
+        max-width: 350px;
+        outline: none;
+        padding: 4px 10px;
+        border: 1px solid #ccc;
+      }
+    }
+    &__footer {
+      display: flex;
+      justify-content: flex-end;
+      .pagination {
+        --bs-pagination-font-size: 1.7rem;
+      }
     }
   }
 }

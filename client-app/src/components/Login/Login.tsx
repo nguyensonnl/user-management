@@ -12,8 +12,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const initialState: User = {
-    valueInput: "trucquynh304@gmail.com",
-    password: "123456",
+    valueInput: "",
+    password: "",
   };
 
   interface propValidate {

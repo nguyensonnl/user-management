@@ -1,9 +1,8 @@
-export interface IPermission{
-    id: number,
-    url: string,
-    description: string,
-    module: string
+export interface IRole{
+    id?: number,
+    name?: string,
+    description?: string,
 
-    createdAt?: string
+    createdAt?: string,
     updatedAt?: string
 }

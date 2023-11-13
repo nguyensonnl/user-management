@@ -26,7 +26,7 @@ Luôn tạo một state danh khác sau khi đã lọc theo select
 const Role = () => {
   const [listPermisison, setListPermission] = useState([]);
   const [listRole, setListRole] = useState([]);
-  const [assignPermissionToRole, setAssignPermissionToRole] = useState([]);
+  //const [assignPermissionToRole, setAssignPermissionToRole] = useState([]);
   const stateRef = useRef(false);
 
   const [selectedGroup, setSelectedGroup] = useState("");
@@ -41,10 +41,6 @@ const Role = () => {
 
   const handleClose = () => {
     setOpenModal(false);
-  };
-
-  const handleSubmit = () => {
-    console.log("Hello world");
   };
 
   useEffect(() => {
@@ -63,7 +59,7 @@ const Role = () => {
             resRole.EC === 0
           ) {
             setListRole(resRole.DT);
-            setAssignPermissionToRole(resPermission.DT);
+            //setAssignPermissionToRole(resPermission.DT);
             setListPermission(resPermission.DT);
           }
         }
@@ -75,19 +71,20 @@ const Role = () => {
   }, []);
 
   //Gom nhóm permisison theo module
-  const groupByPermission = (data: any) => {
-    return _(data)
-      .groupBy((x) => x.module)
-      .map((value: any, key: any) => {
-        return {
-          module: key,
-          permissions: value,
-        };
-      })
-      .value();
-  };
-  const result = groupByPermission(assignPermissionToRole);
+  // const groupByPermission = (data: any) => {
+  //   return _(data)
+  //     .groupBy((x) => x.module)
+  //     .map((value: any, key: any) => {
+  //       return {
+  //         module: key,
+  //         permissions: value,
+  //       };
+  //     })
+  //     .value();
+  // };
+  //const result = groupByPermission(assignPermissionToRole);
 
+  //For update
   //Lấy role đã lọc theo group
   const buildDataRolesByGroup = (groupRoles: any, allRoles: any) => {
     let result: any = [];
@@ -157,11 +154,12 @@ const Role = () => {
   const handleSave = async () => {
     try {
       let data = buildDataToSave();
-      let res = await roleService.assignRolesToGroup(data);
-      if (res && res.EC === 0) {
-        alert(res.EM);
-        window.location.reload();
-      }
+      console.log(data);
+      // let res = await roleService.assignRolesToGroup(data);
+      // if (res && res.EC === 0) {
+      //   alert(res.EM);
+      //   window.location.reload();
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -201,7 +199,7 @@ const Role = () => {
       const res = await roleService.getRolesByGroup(roleId);
       if (res && +res.EC === 0) {
         let result = buildDataPermissionByRole(res.DT?.Roles, listPermisison);
-        setAssignPermissionToRole(result);
+        //setAssignPermissionToRole(result);
       }
     } catch (error) {
       console.log(error);
@@ -212,6 +210,7 @@ const Role = () => {
   return (
     <Layout>
       <div className="role__page">
+        {/*  
         <h3>List group</h3>
         <select
           style={{ width: "30%", marginBottom: "10px" }}
@@ -268,22 +267,21 @@ const Role = () => {
             </button>
           </div>
         )}
+        */}
 
-        <div className="role__content">
-          <div className="role__heading">
-            <h3 style={{ margin: "10px 0" }}>Danh sách vai trò</h3>
-            <Button variant="primary" onClick={handleOpenModal}>
-              Tạo mới vai trò
-            </Button>
-          </div>
-          <ViewRole listRole={listRole} onUpdate={handleUpdate} />
+        <div className="role__heading">
+          <h3 style={{ margin: "10px 0" }}>Danh sách vai trò</h3>
+          <Button variant="primary" onClick={handleOpenModal}>
+            Tạo mới vai trò
+          </Button>
         </div>
+        <ViewRole listRole={listRole} onUpdate={handleUpdate} />
 
         <ModalRole
           openModal={openModal}
           handleClose={handleClose}
-          permissionsGroupByModule={result}
-          handleSubmit={handleSubmit}
+          //permissionsGroupByModule={result}
+          listPermission={listPermisison}
           roleId={roleId}
         />
       </div>

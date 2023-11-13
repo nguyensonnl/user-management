@@ -1,0 +1,3 @@
+- Component Role: listPermission
+  - ModalRole
+  - ViewRole
