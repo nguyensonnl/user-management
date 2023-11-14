@@ -11,6 +11,7 @@ interface Props {
 
 const Layout = ({ children }: Props) => {
   const { logoutContext } = useContext(UserContext) as UserContextType;
+  const { user } = useContext(UserContext) as UserContextType;
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -29,7 +30,7 @@ const Layout = ({ children }: Props) => {
 
         <main className="content">
           <div className="header">
-            <span>Hello, admin</span>
+            <span>Hello, {user?.account?.username}</span>
             <span onClick={() => handleLogout()}>Logout</span>
           </div>
           <div className="main">{children}</div>

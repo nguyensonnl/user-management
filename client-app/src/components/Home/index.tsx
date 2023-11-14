@@ -1,25 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Layout from "../Layout";
 import userService from "../../api/userService";
-import groupService from "../../api/groupService";
 import roleService from "../../api/roleService";
+import permisisonService from "../../api/permissionService";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const [listUser, setListUser] = useState<any>();
   const [listRole, setListRole] = useState<any>();
   const [listPermission, setListPermission] = useState<any>();
+  const stateRef = useRef<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [resUser, resRole, resPermission] = await Promise.all([
-        userService.getAllUser(),
-        groupService.getAllGroup(),
-        roleService.getAllRole(),
-      ]);
-      setListUser(resUser.DT);
-      setListRole(resRole.DT);
-      setListPermission(resPermission.DT);
+      if (stateRef.current === false) {
+        stateRef.current = true;
+        const [resUser, resRole, resPermission] = await Promise.all([
+          userService.getAllUser(),
+          roleService.getRole(),
+          permisisonService.getPermission(),
+        ]);
+        if (resRole && resPermission && resUser) {
+          setListUser(resUser.DT);
+          setListRole(resRole.DT);
+          setListPermission(resPermission.DT);
+        }
+      }
     };
+
     fetchData();
   }, []);
 

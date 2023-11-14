@@ -1,4 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { toast } from 'react-toastify'
+import { Navigate } from "react-router-dom";
 
 const axiosClient = axios.create({
     baseURL: "http://localhost:8181/api/v1",
@@ -29,14 +31,15 @@ axiosClient.interceptors.response.use(function (response: AxiosResponse):any{
     switch (status) {
         // authentication (token related issues)
         case 401: {
-          alert("Unauthorized the user. Please login...");
+          window.location.href= '/login';
           return Promise.reject(err);
         }
   
         // forbidden (permission related issues)
         case 403: {
-           // alert("You don't permission to access this resource...");
+          //toast.error(`You don't have the permission to access this resource...`)
             return Promise.reject(err);
+            
         }
   
         // bad request

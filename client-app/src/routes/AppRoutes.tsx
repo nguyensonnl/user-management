@@ -22,7 +22,6 @@ const AppRoutes = () => {
           path="/"
           element={
             <PrivateRoutes>
-              {" "}
               <Home />
             </PrivateRoutes>
           }

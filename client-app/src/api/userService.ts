@@ -13,10 +13,10 @@ userService.login  = (data:any) =>{
 }
 
 userService.getAllUser = (page: number, limit: number) =>{
-    let url = `/user/read`;
+    let url = `/user`;
     
     if(page && limit){
-        url = `/user/read?page=${page}&limit=${limit}`;
+        url = `/user?page=${page}&limit=${limit}`;
     }
     return axiosClient.get(url)
 }

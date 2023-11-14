@@ -1,24 +1,27 @@
+import "./Permission.scss";
 import { useState, useEffect, useRef } from "react";
 import Layout from "../Layout";
-import "./Permission.scss";
-import { v4 as uuidv4 } from "uuid";
 import { Modal, Button } from "react-bootstrap";
 
-import roleService from "../../api/roleService";
+import permisisonService from "../../api/permissionService";
 import ViewPermission from "./components/ViewPermission";
 import CreatePermission from "./components/CreatePermission";
 
 const Permission = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [listPermission, setListPermission] = useState([]);
+  const stateRef = useRef<boolean>(false);
 
   useEffect(() => {
     const fetchPermission = async () => {
-      try {
-        const res = await roleService.getAllRole();
-        setListPermission(res.DT);
-      } catch (error) {
-        console.log(error);
+      if (stateRef.current === false) {
+        stateRef.current = true;
+        try {
+          const res = await permisisonService.getPermission();
+          setListPermission(res.DT);
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
     fetchPermission();
@@ -26,8 +29,10 @@ const Permission = () => {
 
   const handleCreate = async (data: any) => {
     try {
-      const res = await roleService.createRole(data);
-      console.log(res);
+      const res = await permisisonService.createPermission(data);
+      if (res && +res.EC === 0) {
+        window.location.reload();
+      }
     } catch (error) {
       console.log(error);
     }

@@ -1,12 +1,12 @@
-import { Button } from "react-bootstrap";
-import groupService from "../../api/groupService";
-import roleService from "../../api/roleService";
-import Layout from "../Layout";
+import "./Role.scss";
 import { useEffect, useRef, useState } from "react";
 import _ from "lodash";
-import "./Role.scss";
+import Layout from "../Layout";
+import { Button } from "react-bootstrap";
 import ModalRole from "./components/ModalRole";
 import ViewRole from "./components/ViewRole";
+import roleService from "../../api/roleService";
+import permisisonService from "../../api/permissionService";
 
 /*
 sử dụng useRef để ngăn chặn call api 2 lần
@@ -24,16 +24,17 @@ Luôn tạo một state danh khác sau khi đã lọc theo select
  */
 
 const Role = () => {
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [listPermisison, setListPermission] = useState([]);
   const [listRole, setListRole] = useState([]);
   //const [assignPermissionToRole, setAssignPermissionToRole] = useState([]);
   const stateRef = useRef(false);
 
+  //old code
   const [selectedGroup, setSelectedGroup] = useState("");
   const [assignRolesByGroup, setAssignRolesByGroup] = useState([]);
-
-  const [openModal, setOpenModal] = useState<boolean>(false);
   const [roleId, setRoleId] = useState<number | null>(null);
+  //old code
 
   const handleOpenModal = () => {
     setOpenModal(!openModal);
@@ -49,18 +50,18 @@ const Role = () => {
         if (stateRef.current === false) {
           stateRef.current = true;
           const [resRole, resPermission] = await Promise.all([
-            groupService.getAllGroup(),
-            roleService.getAllRole(),
+            roleService.getRole(),
+            permisisonService.getPermission(),
           ]);
           if (
-            resPermission &&
-            resPermission.EC === 0 &&
             resRole &&
-            resRole.EC === 0
+            resRole.EC === 0 &&
+            resPermission &&
+            resPermission.EC === 0
           ) {
             setListRole(resRole.DT);
-            //setAssignPermissionToRole(resPermission.DT);
             setListPermission(resPermission.DT);
+            //setAssignPermissionToRole(resPermission.DT);
           }
         }
       } catch (error) {
@@ -108,62 +109,62 @@ const Role = () => {
 
   //Luôn kiểm tra điều kiện đầu vào rồi mới action
   //handle select
-  const handleOnChangeGroup = async (value: any) => {
-    setSelectedGroup(value); //id
-    if (value) {
-      let data = await roleService.getRolesByGroup(value);
-      if (data && +data.EC === 0) {
-        let result = buildDataRolesByGroup(data.DT.Roles, listPermisison);
-        //set lại list role theo group, nếu true thì checked
-        setAssignRolesByGroup(result);
-      }
-    }
-  };
+  // const handleOnChangeGroup = async (value: any) => {
+  //   setSelectedGroup(value); //id
+  //   if (value) {
+  //     let data = await roleService.getRolesByGroup(value);
+  //     if (data && +data.EC === 0) {
+  //       let result = buildDataRolesByGroup(data.DT.Roles, listPermisison);
+  //       //set lại list role theo group, nếu true thì checked
+  //       setAssignRolesByGroup(result);
+  //     }
+  //   }
+  // };
 
   //how to multiple checkbox
   //handle checkbox
-  const handleSelectRole = (value: any) => {
-    const cloneAssignRolesByGroup: any = [...assignRolesByGroup];
-    const foundIndex = cloneAssignRolesByGroup.findIndex(
-      (item: any) => +item.id === +value
-    );
+  // const handleSelectRole = (value: any) => {
+  //   const cloneAssignRolesByGroup: any = [...assignRolesByGroup];
+  //   const foundIndex = cloneAssignRolesByGroup.findIndex(
+  //     (item: any) => +item.id === +value
+  //   );
 
-    if (foundIndex > -1) {
-      cloneAssignRolesByGroup[foundIndex].isAssigned =
-        !cloneAssignRolesByGroup[foundIndex].isAssigned;
-    }
-    setAssignRolesByGroup(cloneAssignRolesByGroup);
-  };
+  //   if (foundIndex > -1) {
+  //     cloneAssignRolesByGroup[foundIndex].isAssigned =
+  //       !cloneAssignRolesByGroup[foundIndex].isAssigned;
+  //   }
+  //   setAssignRolesByGroup(cloneAssignRolesByGroup);
+  // };
 
   //Gán group theo role qua bảng trung gian
-  const buildDataToSave = () => {
-    let result: any = {};
-    const cloneAssignRolesByGroup = [...assignRolesByGroup];
-    result.groupId = selectedGroup; //id Group
-    let groupRolesFilter: any = cloneAssignRolesByGroup.filter(
-      (item: any) => item.isAssigned === true
-    );
-    let finalGroupRoles: any = groupRolesFilter.map((item: any) => {
-      let data: any = { groupId: +selectedGroup, roleId: +item.id };
-      return data;
-    });
-    result.groupRoles = finalGroupRoles;
-    return result;
-  };
+  // const buildDataToSave = () => {
+  //   let result: any = {};
+  //   const cloneAssignRolesByGroup = [...assignRolesByGroup];
+  //   result.groupId = selectedGroup; //id Group
+  //   let groupRolesFilter: any = cloneAssignRolesByGroup.filter(
+  //     (item: any) => item.isAssigned === true
+  //   );
+  //   let finalGroupRoles: any = groupRolesFilter.map((item: any) => {
+  //     let data: any = { groupId: +selectedGroup, roleId: +item.id };
+  //     return data;
+  //   });
+  //   result.groupRoles = finalGroupRoles;
+  //   return result;
+  // };
 
-  const handleSave = async () => {
-    try {
-      let data = buildDataToSave();
-      console.log(data);
-      // let res = await roleService.assignRolesToGroup(data);
-      // if (res && res.EC === 0) {
-      //   alert(res.EM);
-      //   window.location.reload();
-      // }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleSave = async () => {
+  //   try {
+  //     let data = buildDataToSave();
+  //     console.log(data);
+  //     let res = await roleService.assignRolesToGroup(data);
+  //     if (res && res.EC === 0) {
+  //    alert(res.EM);
+  //       window.location.reload();
+
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   /**
    * Tạo mới list permission theo role
@@ -193,19 +194,19 @@ const Role = () => {
     return result;
   };
 
-  const handleUpdate = async (roleId: any) => {
-    setRoleId(roleId);
-    try {
-      const res = await roleService.getRolesByGroup(roleId);
-      if (res && +res.EC === 0) {
-        let result = buildDataPermissionByRole(res.DT?.Roles, listPermisison);
-        //setAssignPermissionToRole(result);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    setOpenModal(true);
-  };
+  // const handleUpdate = async (roleId: any) => {
+  //   setRoleId(roleId);
+  //   try {
+  //     const res = await roleService.getRolesByGroup(roleId);
+  //     if (res && +res.EC === 0) {
+  //       let result = buildDataPermissionByRole(res.DT?.Roles, listPermisison);
+  //       //setAssignPermissionToRole(result);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  //   setOpenModal(true);
+  // };
 
   return (
     <Layout>
@@ -275,14 +276,14 @@ const Role = () => {
             Tạo mới vai trò
           </Button>
         </div>
-        <ViewRole listRole={listRole} onUpdate={handleUpdate} />
+        <ViewRole listRole={listRole} />
 
         <ModalRole
           openModal={openModal}
           handleClose={handleClose}
           //permissionsGroupByModule={result}
           listPermission={listPermisison}
-          roleId={roleId}
+          //roleId={roleId}
         />
       </div>
     </Layout>

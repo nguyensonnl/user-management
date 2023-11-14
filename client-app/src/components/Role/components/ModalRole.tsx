@@ -1,8 +1,8 @@
 import { Modal, Button } from "react-bootstrap";
 import { useEffect, useState, useMemo } from "react";
 import roleService from "../../../api/roleService";
+import permisisonService from "../../../api/permissionService";
 import _ from "lodash";
-import groupService from "../../../api/groupService";
 
 /**
  * get listPermission from component parent
@@ -55,6 +55,7 @@ const ModalRole = (props: IProps) => {
     return true;
   };
 
+  //handle single checkbox
   const handleChangeCheckbox = (e: any, value: any) => {
     if (e.target.checked) {
       setSelectedPermissions([
@@ -73,6 +74,30 @@ const ModalRole = (props: IProps) => {
     }
   };
 
+  /**
+   * Handle check all module of permisison
+   */
+  const handleSelectedAllPermission = (e: any, data: any) => {
+    if (e.target.checked) {
+      setSelectedPermissions([...selectedPermisisons, data.permissions].flat());
+    } else {
+      const result = selectedPermisisons.filter(
+        (item: any) => item.module !== data.module
+      );
+      setSelectedPermissions(result);
+      //  setSelectedPermissions(selectedPermisisons.filter((item:any)=> i))
+    }
+  };
+
+  //Handle check all permission
+  const handleTotalCheckall = (e: any) => {
+    if (e.target.checked) {
+      setSelectedPermissions(listPermission);
+    } else {
+      setSelectedPermissions([]);
+    }
+  };
+
   const handleSubmitModal = async () => {
     if (roleId) {
       //update
@@ -87,20 +112,20 @@ const ModalRole = (props: IProps) => {
           name: inputValue.name,
           description: inputValue.description,
         };
-        const res = await groupService.createNewGroup(role);
+        const res = await roleService.createRole(role);
         if (res && res.DT.id) {
           //get id role
           //assign permision to role
-          data.groupId = res.DT.id;
+          data.roleId = res.DT.id;
           const permisisonRoleFinal = selectedPermisisons.map((item: any) => {
-            let data: any = { groupId: +res.DT.id, roleId: +item.id };
+            let data: any = { roleId: +res.DT.id, permissionId: +item.id };
             return data;
           });
           data.groupRoles = permisisonRoleFinal;
         }
 
         try {
-          const res = await roleService.assignRolesToGroup(data);
+          const res = await permisisonService.assignPermissionToRole(data);
           if (res && +res.EC === 0) {
             window.location.reload();
           } else {
@@ -113,31 +138,6 @@ const ModalRole = (props: IProps) => {
       }
     }
   };
-
-  /**
-   * Handle check all
-   */
-  const handleSelectedAllPermission = (e: any, data: any) => {
-    if (e.target.checked) {
-      setSelectedPermissions([...selectedPermisisons, data.permissions].flat());
-    } else {
-      const result = selectedPermisisons.filter(
-        (item: any) => item.module !== data.module
-      );
-      setSelectedPermissions(result);
-      //  setSelectedPermissions(selectedPermisisons.filter((item:any)=> i))
-    }
-  };
-
-  const handleTotalCheckall = (e: any) => {
-    if (e.target.checked) {
-      setSelectedPermissions(listPermission);
-    } else {
-      setSelectedPermissions([]);
-    }
-  };
-
-  console.log(selectedPermisisons);
   //doing
 
   //Gom nhóm permisison theo module
@@ -157,20 +157,20 @@ const ModalRole = (props: IProps) => {
     return groupByPermission(listPermission);
   }, [listPermission]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await roleService.getRolesByGroup(roleId);
-        setInputValue({
-          name: res.DT.name,
-          description: res.DT.description,
-        });
-      } catch (error) {
-        console.log();
-      }
-    };
-    fetchData();
-  }, [roleId]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await roleService.getRolesByGroup(roleId);
+  //       setInputValue({
+  //         name: res.DT.name,
+  //         description: res.DT.description,
+  //       });
+  //     } catch (error) {
+  //       console.log();
+  //     }
+  //   };
+  //   fetchData();
+  // }, [roleId]);
 
   const handleChangeInput = (e: any) => {
     const name = e.target.name;

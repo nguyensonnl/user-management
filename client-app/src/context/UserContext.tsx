@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useEffect, useState, ReactNode, useRef } from "react";
 import userService from "../api/userService";
 
 interface UserData {
@@ -29,6 +29,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   };
 
   const [user, setUser] = useState<UserData>(userDefault);
+  const stateRef = useRef<boolean>(false);
 
   const loginContext = (userData: UserData) => {
     setUser({ ...userData, isLoading: false });
@@ -39,13 +40,13 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   };
 
   const fetchUser = async () => {
-    let response = await userService.getAccount();
-    // console.log(response);
-    if (response && response.EC === 0) {
-      let groupWithRoles = response.DT.groupWithRoles;
-      let email = response.DT.email;
-      let username = response.DT.username;
-      let token = response.DT.access_token;
+    let account = await userService.getAccount();
+
+    if (account && account.EC === 0) {
+      let groupWithRoles = account.DT.groupWithRoles;
+      let email = account.DT.email;
+      let username = account.DT.username;
+      let token = account.DT.access_token;
 
       let data: UserData = {
         isAuthenticated: true,
@@ -60,11 +61,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    if (
-      window.location.pathname !== "/" &&
-      window.location.pathname !== "/login"
-    ) {
-      fetchUser();
+    if (window.location.pathname !== "/login") {
+      if (stateRef.current === false) {
+        stateRef.current = true;
+        fetchUser();
+      }
     } else {
       setUser({ ...user, isLoading: false });
     }

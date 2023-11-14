@@ -4,7 +4,7 @@ import Layout from "../Layout";
 import ListUser from "./components/ListUser";
 import userService from "../../api/userService";
 import { Button, Modal } from "react-bootstrap";
-import groupService from "../../api/groupService";
+import roleService from "../../api/roleService";
 import axios from "axios";
 
 interface IUser {
@@ -41,9 +41,12 @@ const User = () => {
         try {
           const [resUser, resRole] = await Promise.all([
             userService.getAllUser(),
-            groupService.getAllGroup(),
+            roleService.getRole(),
           ]);
-          if (resRole && +resRole.EC === 0 && resUser && +resUser.EC === 0) {
+          if (
+            (resRole && +resRole.EC === 0) ||
+            (resUser && +resUser.EC === 0)
+          ) {
             setListUser(resUser.DT);
             setListRole(resRole.DT);
           }
@@ -54,6 +57,7 @@ const User = () => {
     };
     fetchData();
   }, []);
+  console.log(listUser);
 
   const handleShow = () => {
     setShow(!show);
@@ -99,7 +103,7 @@ const User = () => {
       phone: inputs.phone,
       address: inputs.address,
       gender: inputs.gender,
-      group_id: selectRole,
+      role_id: selectRole,
     };
 
     try {
@@ -129,7 +133,7 @@ const User = () => {
         address: res.data.DT.address,
         gender: res.data.DT.gender,
       });
-      setSelectRole(+res.data.DT.groupId);
+      setSelectRole(+res.data.DT.roleId);
     } catch (error) {
       console.log(error);
     }
