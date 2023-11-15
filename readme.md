@@ -1,16 +1,18 @@
-### Modules authentication
+### Modules Authentication
 
-### User Management
+### User Managment
 
 - Authentication: jwt
-- Authorization: rbac(url)
-- CRUD users, roles, permisisons
-- Assign permisison to roles
+- Authorization: rbac(api)
+- CRUD Users, Roles, Permissions
+- Assign permission to role
 
-### Tech Stach
+### Tech stack
+- **UI:** Html, Css, Scss
+- **Programing Language:** Javascript, Typescript(main)
+- **Framework:** React
+- **Build tool:** Vite, npm
+- **State managment:** Redux, Redux Toolkit, Context API
+- **Styles:** SCSS
+- **Router:** React Router
 
-- Javascript/Typescript
-- Vite
-- Html, css(scss)
-- Nodejs: Express
-- MySQL
