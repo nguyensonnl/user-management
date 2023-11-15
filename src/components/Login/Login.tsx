@@ -75,7 +75,7 @@ const Login = () => {
             token,
             account: { groupWithRoles, email, username },
           };
-          localStorage.setItem("jwt", token);
+          localStorage.setItem("accessToken", token);
           loginContext(data);
           navigate("/");
           setInputs(initialState);

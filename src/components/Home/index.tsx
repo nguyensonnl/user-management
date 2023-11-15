@@ -3,7 +3,8 @@ import Layout from "../Layout";
 import userService from "../../api/userService";
 import roleService from "../../api/roleService";
 import permisisonService from "../../api/permissionService";
-import { toast } from "react-toastify";
+import Access from "../Access";
+import { ALL_PERMISSIONS } from "../../constants/permisison";
 
 const Home = () => {
   const [listUser, setListUser] = useState<any>();
@@ -34,25 +35,27 @@ const Home = () => {
   return (
     <>
       <Layout>
-        <div className="container">
-          <div className="row">
-            <div className="col col-6">
-              <div className="alert alert-primary" role="alert">
-                Tổng user: {listUser && listUser.length}
+        <Access permission={ALL_PERMISSIONS.ROLES.GET_PAGINATE}>
+          <div className="container">
+            <div className="row">
+              <div className="col col-6">
+                <div className="alert alert-primary" role="alert">
+                  Tổng user: {listUser && listUser.length}
+                </div>
               </div>
-            </div>
-            <div className="col col-6">
-              <div className="alert alert-secondary" role="alert">
-                Tổng vai trò: {listRole && listRole.length}
+              <div className="col col-6">
+                <div className="alert alert-secondary" role="alert">
+                  Tổng vai trò: {listRole && listRole.length}
+                </div>
               </div>
-            </div>
-            <div className="col col-6">
-              <div className="alert alert-success" role="alert">
-                Tổng quyền hạn: {listPermission && listPermission.length}
+              <div className="col col-6">
+                <div className="alert alert-success" role="alert">
+                  Tổng quyền hạn: {listPermission && listPermission.length}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </Access>
       </Layout>
     </>
   );

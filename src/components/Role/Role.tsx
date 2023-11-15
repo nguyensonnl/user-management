@@ -7,6 +7,8 @@ import ModalRole from "./components/ModalRole";
 import ViewRole from "./components/ViewRole";
 import roleService from "../../api/roleService";
 import permisisonService from "../../api/permissionService";
+import Access from "../Access";
+import { ALL_PERMISSIONS } from "../../constants/permisison";
 
 /*
 sử dụng useRef để ngăn chặn call api 2 lần
@@ -210,8 +212,9 @@ const Role = () => {
 
   return (
     <Layout>
-      <div className="role__page">
-        {/*  
+      <Access permission={ALL_PERMISSIONS.ROLES.GET_PAGINATE}>
+        <div className="role__page">
+          {/*  
         <h3>List group</h3>
         <select
           style={{ width: "30%", marginBottom: "10px" }}
@@ -270,22 +273,32 @@ const Role = () => {
         )}
         */}
 
-        <div className="role__heading">
-          <h3 style={{ margin: "10px 0" }}>Danh sách vai trò</h3>
-          <Button variant="primary" onClick={handleOpenModal}>
-            Tạo mới vai trò
-          </Button>
-        </div>
-        <ViewRole listRole={listRole} />
+          <div className="item__heading">
+            <h2>Danh sách vai trò</h2>
+            <Button variant="primary" onClick={handleOpenModal}>
+              Tạo mới vai trò
+            </Button>
+          </div>
 
-        <ModalRole
-          openModal={openModal}
-          handleClose={handleClose}
-          //permissionsGroupByModule={result}
-          listPermission={listPermisison}
-          //roleId={roleId}
-        />
-      </div>
+          <div className="item__control">
+            <input
+              type="text"
+              placeholder="search..."
+              className="item__input"
+            />
+          </div>
+
+          <ViewRole listRole={listRole} />
+
+          <ModalRole
+            openModal={openModal}
+            handleClose={handleClose}
+            //permissionsGroupByModule={result}
+            listPermission={listPermisison}
+            //roleId={roleId}
+          />
+        </div>
+      </Access>
     </Layout>
   );
 };

@@ -10,7 +10,7 @@ const PrivateRoutes: React.FC<Props> = (props) => {
   const { user } = useContext(UserContext) as UserContextType;
   const auth = user && user.isAuthenticated === true;
 
-  const token = localStorage.getItem("jwt");
+  const token = localStorage.getItem("accessToken");
 
   return token ? <> {props.children}</> : <Navigate to="/login" />;
 };

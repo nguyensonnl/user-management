@@ -14,16 +14,6 @@ const ViewRole = (props: IProps) => {
 
   return (
     <div className="list__role">
-      <div className="list__role__heading">
-        <div className="limit-show">
-          <select>
-            <option>10</option>
-            <option>20</option>
-            <option>50</option>
-          </select>
-        </div>
-        <input type="text" placeholder="search..." className="search-table" />
-      </div>
       <table className="table">
         <thead>
           <tr>

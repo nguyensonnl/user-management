@@ -36,34 +36,11 @@
 }
 
 .role__page {
-  .role__heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
   .list__role {
     background-color: #fff;
     border-radius: 8px;
     padding: 10px 20px;
 
-    &__heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-
-      .search-table {
-        width: 100%;
-        max-width: 350px;
-        outline: none;
-        padding: 4px 10px;
-        border: 1px solid #ccc;
-      }
-    }
     &__footer {
       display: flex;
       justify-content: flex-end;

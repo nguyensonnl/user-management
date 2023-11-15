@@ -16,7 +16,7 @@ const Layout = ({ children }: Props) => {
 
   const handleLogout = async () => {
     let data = await userService.logout();
-    localStorage.removeItem("jwt");
+    localStorage.removeItem("accessToken");
     logoutContext();
 
     if (data && +data.EC === 0) {

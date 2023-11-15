@@ -1,5 +1,28 @@
+import dayjs from "dayjs";
 const ListUser = (props: any) => {
-  const { users, onDelete, onUpdate } = props;
+  const {
+    users,
+    onDelete,
+    onUpdate,
+    pages,
+    onChangePage,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    currentLimit,
+  } = props;
+
+  const handlePriviousPage = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage !== totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const handleDelete = (idUser: any) => {
     onDelete(idUser);
@@ -8,9 +31,13 @@ const ListUser = (props: any) => {
   const handleUpdate = (idUser: any) => {
     onUpdate(idUser);
   };
+
+  const handleChangePage = () => {
+    onChangePage();
+  };
   return (
-    <div className="list__user">
-      <table className="table table-striped">
+    <div className="list__user item__table">
+      <table className="table ">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -27,11 +54,11 @@ const ListUser = (props: any) => {
             users.map((item: any, index: any) => (
               <tr key={index}>
                 <>
-                  <td>{index + 1}</td>
+                  <td>{(currentPage - 1) * currentLimit + index + 1}</td>
                   <td>{item.username}</td>
                   <td>{item.email}</td>
-                  <td>{item.Group?.name}</td>
-                  <td>{item.createdAt}</td>
+                  <td>{item.Role?.name}</td>
+                  <td>{dayjs(item.createdAt).format("DD/MM/YYYY h:mm A")}</td>
                   <td>
                     <button
                       className="btn btn-success"
@@ -51,6 +78,19 @@ const ListUser = (props: any) => {
             ))}
         </tbody>
       </table>
+      <div className="footer">
+        <ul className="item__pagination">
+          <li onClick={() => handlePriviousPage()}>Privious</li>
+          {pages &&
+            pages.length > 0 &&
+            pages.map((item: any) => (
+              <li className="item__pagination__list" onClick={handleChangePage}>
+                <span>{item}</span>
+              </li>
+            ))}
+          <li onClick={() => handleNextPage()}>Next</li>
+        </ul>
+      </div>
     </div>
   );
 };
