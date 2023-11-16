@@ -1,40 +1,38 @@
 import dayjs from "dayjs";
-const ListUser = (props: any) => {
+import Pagination from "../../Pagination";
+
+interface IProps {
+  users?: any;
+  currentPage?: any;
+  setCurrentPage?: any;
+  totalPages?: any;
+  currentLimit?: any;
+  onDeleteUser?: any;
+  onUpdateUser?: any;
+  setShow?: any;
+}
+
+const ViewUser = (props: IProps) => {
   const {
     users,
-    onDelete,
-    onUpdate,
-    pages,
-    onChangePage,
+    totalPages,
     currentPage,
     setCurrentPage,
-    totalPages,
     currentLimit,
+    onUpdateUser,
+    onDeleteUser,
+    setShow,
   } = props;
 
-  const handlePriviousPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
+  const handleUpdateUser = (userId: number) => {
+    setShow(true);
+    onUpdateUser(userId);
   };
 
-  const handleNextPage = () => {
-    if (currentPage !== totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+  const handleDeleteUser = async (userId: number) => {
+    onDeleteUser(userId);
   };
 
-  const handleDelete = (idUser: any) => {
-    onDelete(idUser);
-  };
-
-  const handleUpdate = (idUser: any) => {
-    onUpdate(idUser);
-  };
-
-  const handleChangePage = () => {
-    onChangePage();
-  };
   return (
     <div className="list__user item__table">
       <table className="table ">
@@ -62,13 +60,13 @@ const ListUser = (props: any) => {
                   <td>
                     <button
                       className="btn btn-success"
-                      onClick={() => handleUpdate(item.id)}
+                      onClick={() => handleUpdateUser(item.id)}
                     >
                       Edit
                     </button>
                     <button
                       className="btn btn-danger"
-                      onClick={() => handleDelete(item.id)}
+                      onClick={() => handleDeleteUser(item.id)}
                     >
                       Delele
                     </button>
@@ -79,20 +77,14 @@ const ListUser = (props: any) => {
         </tbody>
       </table>
       <div className="footer">
-        <ul className="item__pagination">
-          <li onClick={() => handlePriviousPage()}>Privious</li>
-          {pages &&
-            pages.length > 0 &&
-            pages.map((item: any) => (
-              <li className="item__pagination__list" onClick={handleChangePage}>
-                <span>{item}</span>
-              </li>
-            ))}
-          <li onClick={() => handleNextPage()}>Next</li>
-        </ul>
+        <Pagination
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );
 };
 
-export default ListUser;
+export default ViewUser;

@@ -36,9 +36,9 @@ userService.createNewUser = (data: object) =>{
     return axiosClient.post(url, data)
 }
 
-userService.deleteUser = (data: object)=>{
+userService.deleteUser = (data: any )=>{
     const url = `/user/delete`;
-    return axiosClient.delete(url, data);
+    return axiosClient.delete(url, {data});
 }
 
 userService.updateUser = (data: object)=>{
