@@ -16,7 +16,7 @@
   padding: 10px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-around;
 
   .item__input {
     width: 100%;
@@ -45,6 +45,10 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+
+  button:disabled {
+    cursor: not-allowed;
+  }
 
   .isactive {
     color: #fff;

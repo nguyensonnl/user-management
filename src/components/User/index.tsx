@@ -7,16 +7,37 @@ import { Button } from "react-bootstrap";
 import ModalUser from "./components/ModalUser";
 
 const User = () => {
-  const [listUser, setListUser] = useState<any>([]);
-  const [show, setShow] = useState<boolean>(false);
+  const [listUser, setListUser] = useState<any[]>([]);
   const [userId, setUserId] = useState<number | null>(null);
 
+  //modal
+  const [show, setShow] = useState<boolean>(false);
   const handleShow = () => {
     setShow(!show);
   };
+  //modal
 
-  //oding filter
+  //control data
   const [searchInput, setSearchInput] = useState<string>("");
+  const [resultFiltered, setResultFiltered] = useState<any[]>();
+  const [selectedResult, setSelectedResult] = useState<string>("");
+
+  const handleChangeSelected = (e: any) => {
+    const value = e.target.value;
+
+    console.log(value);
+
+    let temp = [...listUser];
+
+    temp = temp.filter((item) => {
+      if (value === "All") {
+        return item;
+      } else {
+        return item?.Role.name === value;
+      }
+    });
+    setResultFiltered(temp);
+  };
 
   const handleChangeSearchInput = (e: any) => {
     setSearchInput(e.target.value);
@@ -32,9 +53,9 @@ const User = () => {
           .includes(searchInput.toLowerCase());
       }
     });
-    setListUser(temp);
+    setResultFiltered(temp);
   };
-  //doing
+  //control data
 
   //pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -48,6 +69,7 @@ const User = () => {
 
         if (resUser && +resUser.EC === 0) {
           setListUser(resUser.DT.users);
+          setResultFiltered(resUser.DT.users);
           setTotalPages(resUser.DT.totalPages);
         }
       } catch (error) {
@@ -88,8 +110,28 @@ const User = () => {
             Create new user
           </Button>
         </div>
-
         <div className="item__control">
+          <div className="item__name">
+            <input type="checkbox" style={{ marginRight: "5px" }} />
+            <span>Show all</span>
+          </div>
+          <div className="item__name">
+            <span style={{ marginRight: "5px" }}>Number of rows</span>
+            <select>
+              <option>5</option>
+              <option>10</option>
+              <option>15</option>
+            </select>
+          </div>
+          <div className="item__name">
+            <label style={{ marginRight: "5px" }}>Sort by role: </label>
+            <select onChange={(e) => handleChangeSelected(e)}>
+              <option>All</option>
+              <option>admin</option>
+              <option>dev</option>
+            </select>
+          </div>
+
           <input
             value={searchInput}
             onChange={(e) => handleChangeSearchInput(e)}
@@ -100,7 +142,7 @@ const User = () => {
         </div>
 
         <ViewUser
-          users={listUser}
+          users={resultFiltered}
           onUpdateUser={handleUpdateUser}
           onDeleteUser={handleDeleteUser}
           currentPage={currentPage}
