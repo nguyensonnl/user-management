@@ -57,7 +57,7 @@ const User = () => {
   };
   //control data
 
-  //pagination
+  //get user and pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [currentLimit] = useState<number>(5);
   const [totalPages, setTotalPages] = useState(0);
@@ -79,6 +79,7 @@ const User = () => {
     fetchUser();
   }, [currentPage]);
 
+  //doing action
   const handleUpdateUser = (userId: number) => {
     setUserId(userId);
   };
@@ -100,6 +101,7 @@ const User = () => {
       console.log(error);
     }
   };
+  //doing action
 
   return (
     <Layout>

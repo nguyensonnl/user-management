@@ -140,117 +140,134 @@ const ModalUser = (props: IProps) => {
           <Modal.Title>{userId ? "Cập nhật user" : "Tạo mới user"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="form__group1">
-            <label>
-              <span>*</span> Email
-            </label>
-            <input
-              className={userId ? "item__input not-allow" : "item__input"}
-              disabled={userId ? true : false}
-              type="text"
-              placeholder="Email"
-              name="email"
-              value={inputs.email}
-              onChange={(e) => handleChangeInput(e)}
-            />
-          </div>
-          {!userId && (
-            <div className="form__group1">
-              <label>
-                <span>*</span> Password
-              </label>
-              <input
-                className={userId ? "item__input not-allow" : "item__input"}
-                disabled={userId ? true : false}
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={inputs.password}
-                onChange={(e) => handleChangeInput(e)}
-              />
+          <div className="row">
+            <div className="col col-6">
+              <div className="form__group1">
+                <label>
+                  <span>*</span> Email
+                </label>
+                <input
+                  className={userId ? "item__input not-allow" : "item__input"}
+                  disabled={userId ? true : false}
+                  type="text"
+                  placeholder="Email"
+                  name="email"
+                  value={inputs.email}
+                  onChange={(e) => handleChangeInput(e)}
+                />
+              </div>
             </div>
-          )}
+            <div className="col col-6">
+              {!userId && (
+                <div className="form__group1">
+                  <label>
+                    <span>*</span> Password
+                  </label>
+                  <input
+                    className={userId ? "item__input not-allow" : "item__input"}
+                    disabled={userId ? true : false}
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    value={inputs.password}
+                    onChange={(e) => handleChangeInput(e)}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="col col-6">
+              <div className="form__group1">
+                <label>
+                  <span>*</span> Username
+                </label>
+                <input
+                  className="item__input"
+                  type="text"
+                  placeholder="User name"
+                  name="username"
+                  value={inputs.username}
+                  onChange={(e) => handleChangeInput(e)}
+                />
+              </div>
+            </div>
+            <div className="col col-6">
+              <div className="form__group1">
+                <label>
+                  <span>*</span> Phone
+                </label>
+                <input
+                  className="item__input"
+                  type="text"
+                  placeholder="Phone"
+                  name="phone"
+                  value={inputs.phone}
+                  onChange={(e) => handleChangeInput(e)}
+                />
+              </div>
+            </div>
+            <div className="col col-12">
+              <div className="form__group1">
+                <label>
+                  <span>*</span> Address
+                </label>
+                <input
+                  className="item__input"
+                  type="text"
+                  placeholder="Address"
+                  name="address"
+                  value={inputs.address}
+                  onChange={(e) => handleChangeInput(e)}
+                />
+              </div>
+            </div>
 
-          <div className="form__group1">
-            <label>
-              <span>*</span> Username
-            </label>
-            <input
-              className="item__input"
-              type="text"
-              placeholder="User name"
-              name="username"
-              value={inputs.username}
-              onChange={(e) => handleChangeInput(e)}
-            />
-          </div>
-          <div className="form__group1">
-            <label>
-              <span>*</span> Address
-            </label>
-            <input
-              className="item__input"
-              type="text"
-              placeholder="Address"
-              name="address"
-              value={inputs.address}
-              onChange={(e) => handleChangeInput(e)}
-            />
-          </div>
-          <div className="form__group1">
-            <label>
-              <span>*</span> Phone
-            </label>
-            <input
-              className="item__input"
-              type="text"
-              placeholder="Phone"
-              name="phone"
-              value={inputs.phone}
-              onChange={(e) => handleChangeInput(e)}
-            />
-          </div>
-          <div className="form__group1">
-            <label>
-              <span>*</span> Gender
-            </label>
-            <select
-              style={{
-                padding: "4px 6px",
-                outline: "none",
-                border: "1px solid #ccc",
-              }}
-              name="gender"
-              value={inputs.gender}
-              onChange={(e) => handleChangeInput(e)}
-            >
-              <option>Chọn giới tính</option>
-              <option>Nam</option>
-              <option>Nữ</option>
-            </select>
-          </div>
-          <div className="form__group1">
-            <label>
-              <span>*</span> Role
-            </label>
-            <select
-              style={{
-                padding: "4px 6px",
-                outline: "none",
-                border: "1px solid #ccc",
-              }}
-              value={selectRole}
-              onChange={(e) => handleChangeSelect(e)}
-            >
-              <option>Chọn vai trò</option>
-              {listRole &&
-                listRole.length > 0 &&
-                listRole.map((item: any, index) => (
-                  <option value={item.id} key={index}>
-                    {item.name}
-                  </option>
-                ))}
-            </select>
+            <div className="col col-6">
+              <div className="form__group1">
+                <label>
+                  <span>*</span> Gender
+                </label>
+                <select
+                  style={{
+                    padding: "4px 6px",
+                    outline: "none",
+                    border: "1px solid #ccc",
+                  }}
+                  name="gender"
+                  value={inputs.gender}
+                  onChange={(e) => handleChangeInput(e)}
+                >
+                  <option>Chọn giới tính</option>
+                  <option>Nam</option>
+                  <option>Nữ</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="col col-6">
+              <div className="form__group1">
+                <label>
+                  <span>*</span> Role
+                </label>
+                <select
+                  style={{
+                    padding: "4px 6px",
+                    outline: "none",
+                    border: "1px solid #ccc",
+                  }}
+                  value={selectRole}
+                  onChange={(e) => handleChangeSelect(e)}
+                >
+                  <option>Chọn vai trò</option>
+                  {listRole &&
+                    listRole.length > 0 &&
+                    listRole.map((item: any, index) => (
+                      <option value={item.id} key={index}>
+                        {item.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>

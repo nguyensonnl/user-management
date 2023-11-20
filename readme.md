@@ -8,6 +8,7 @@
 - Assign permission to role
 
 ### Tech stack
+
 - **UI:** Html, Css, Scss
 - **Programing Language:** Javascript, Typescript(main)
 - **Framework:** React
@@ -15,4 +16,4 @@
 - **State managment:** Redux, Redux Toolkit, Context API
 - **Styles:** SCSS
 - **Router:** React Router
-
+- **Server API:** Tự viết API
