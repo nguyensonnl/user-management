@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { UserContextType, UserContext } from "../../context/UserContext";
+import DenyAccess from "../403Forbidden";
 
 interface IProps {
   hideChildren?: boolean;
@@ -36,7 +37,18 @@ const Access = (props: IProps) => {
       ) : (
         <>
           {hideChildren === false ? (
-            <div>Bạn không có quyền truy cập thông tin này</div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "30px",
+              }}
+            >
+              <DenyAccess />
+              <div>Bạn không có quyền truy cập thông tin này</div>
+            </div>
           ) : (
             <>{/* render nothing */}</>
           )}

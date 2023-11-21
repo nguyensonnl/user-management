@@ -46,4 +46,10 @@ userService.updateUser = (data: object)=>{
     return axiosClient.put(url, data)
 }
 
+userService.getOneUser = (idUser:any)=>{
+    const url = `/user/${idUser}`;
+    return axiosClient.get(url)
+}
+
+
 export default userService;

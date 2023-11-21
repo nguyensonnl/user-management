@@ -32,18 +32,17 @@ const ModalUser = (props: IProps) => {
     const fetchUserId = async () => {
       if (userId) {
         try {
-          const res = await axios.get(
-            `http://localhost:8181/api/v1/user/${userId}`
-          );
+          const res = await userService.getOneUser(userId);
+
           setInputs({
-            email: res.data.DT.email,
-            password: res.data.DT.password,
-            username: res.data.DT.username,
-            address: res.data.DT.address,
-            phone: res.data.DT.phone,
-            gender: res.data.DT.gender,
+            email: res.DT.email,
+            password: res.DT.password,
+            username: res.DT.username,
+            address: res.DT.address,
+            phone: res.DT.phone,
+            gender: res.DT.gender,
           });
-          setSelectRole(+res.data.DT.roleId);
+          setSelectRole(+res.DT.roleId);
         } catch (error) {
           console.log(error);
         }
