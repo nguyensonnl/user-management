@@ -19,7 +19,44 @@ const User = () => {
   };
   //modal
 
-  //control data without query params
+  //control data from query api
+  const [searhInputV1, setSearchInputV1] = useState<string>("");
+  const [users, setUsers] = useState();
+  const [filteredUsers, setFilteredUsers] = useState();
+
+  //handle queries
+  const [search, setSearch] = useState<any>({});
+
+  const qs = queryString.stringify({
+    page: 2,
+    search: search.search,
+    gender: search.gender,
+  });
+
+  console.log(qs);
+
+  let query = `http://localhost:8181/api/v1/user/get?${qs}`;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(query);
+        setUsers(res.data.data);
+        setFilteredUsers(res.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, [qs]);
+
+  const handleChangeSearchInputV1 = (e: any) => {
+    setSearchInputV1(e.target.value);
+  };
+
+  //control data from query api
+
+  //control data without paramerters
   const [searchInput, setSearchInput] = useState<string>("");
   const [resultFiltered, setResultFiltered] = useState<any[]>();
   const [selectedResult, setSelectedResult] = useState<string>("");
@@ -55,7 +92,7 @@ const User = () => {
     });
     setResultFiltered(temp);
   };
-  //control data without query params
+  //control data
 
   //get user and pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -134,9 +171,26 @@ const User = () => {
             </select>
           </div>
 
+          <div className="item__name">
+            <label style={{ marginRight: "5px" }}>Sort by gender: </label>
+            <select
+              onChange={(e) =>
+                setSearch({
+                  gender: e.target.value,
+                })
+              }
+            >
+              <option>Nam</option>
+              <option>Nữ</option>
+            </select>
+          </div>
+
           <input
-            value={searchInput}
-            onChange={(e) => handleChangeSearchInput(e)}
+            //  value={searchInput}
+            //   onChange={(e) => handleChangeSearchInput(e)}
+            value={search.search}
+            //onChange={(e) => handleChangeSearchInputV1(e)}
+            onChange={(e) => setSearch({ search: e.target.value })}
             type="text"
             placeholder="Search..."
             className="item__input"
@@ -144,7 +198,8 @@ const User = () => {
         </div>
 
         <ViewUser
-          users={resultFiltered}
+          //   users={resultFiltered}
+          users={users}
           onUpdateUser={handleUpdateUser}
           onDeleteUser={handleDeleteUser}
           currentPage={currentPage}

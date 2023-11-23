@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "../components/Home";
 import Login from "../components/Login";
 import User from "../components/User";
+import UserV3 from "../components/User/index3";
 import Regsiter from "../components/Register";
 import NotFound from "../components/NotFound";
 import Role from "../components/Role";
@@ -32,7 +33,8 @@ const AppRoutes = () => {
           path="/user"
           element={
             <PrivateRoutes>
-              <User />
+              {/* <User /> */}
+              <UserV3 />
             </PrivateRoutes>
           }
         />

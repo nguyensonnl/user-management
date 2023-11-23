@@ -2,7 +2,11 @@
 - Nhưng module này thì chưa tạo mà phải hardcode
 
 - Xử lý queries phía client
+- Build queries in client side
 - Xử lý queries phía server
+
+- Handle token khi hết hạn
+- Handle refreshToken
 
 ### Control Access
 
