@@ -9,49 +9,49 @@ import axios from "axios";
 import queryString from "query-string";
 import { debounce, filter } from "lodash";
 import useDebounce from "../../hooks/useDebounce";
-
-/**
- * handle query params with api from server
- * logic:
- * tạo state lưu các params gửi lên server
- * khi có sự thay đổi thì update params in url api
- *
- */
+import roleService from "../../api/roleService";
 
 const UserV3 = () => {
   const [listUser, setListUser] = useState<any[]>([]);
   const [userId, setUserId] = useState<number | null>(null);
 
-  //modal
   const [show, setShow] = useState<boolean>(false);
   const handleShow = () => {
     setShow(!show);
   };
-  //modal
 
-  /**
-   * handle query params
-   * GIải quyết được params khi nào có thì mới show in api
-   * bug:
-   * thay đổi trên url khi state thay đổi
-   * get?seach=a&sortBy=createdAt&sortOrder=asc
-   * get?seach=ad&sortBy=createdAt&sortOrder=asc
-   * get?seach=adm&sortBy=createdAt&sortOrder=asc
-   * get?seach=admi&sortBy=createdAt&sortOrder=asc
-   * get?seach=admin&sortBy=createdAt&sortOrder=asc
-   *
-   * uesing debounce
-   */
+  const stateRef = useRef<boolean>(false);
+  const [listRole, setListRole] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (stateRef.current === false) {
+        stateRef.current = true;
+        try {
+          const res = await roleService.getRole();
+          setListRole(res.DT);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchRole();
+  }, []);
 
   const [users, setUsers] = useState();
   const [queryParams, setQueryParams] = useState({
     search: "",
     sortBy: "",
     sortOrder: "",
-    filterBy: "gender",
+    filterBy: "",
     filterValue: "",
+    role: "",
+    page: "1",
+    pageSize: "5",
   });
 
+  const [totalPages, setTotalPages] = useState();
+  const [limit, setLimit] = useState();
   const [search, setSearch] = useState<string>("");
   const debounceValue = useDebounce(search, 300);
 
@@ -70,87 +70,111 @@ const UserV3 = () => {
   //   fetchData();
   // }, [debounceValue]);
 
+  const getQueryParams = () => {
+    const queryParamsURL = new URLSearchParams();
+    if (queryParams.page && queryParams.pageSize) {
+      queryParamsURL.set("page", queryParams.page);
+      queryParamsURL.set("pageSize", queryParams.pageSize);
+    }
+    if (queryParams.sortBy) queryParamsURL.set("sortBy", queryParams.sortBy);
+    if (queryParams.sortOrder)
+      queryParamsURL.set("sortOrder", queryParams.sortOrder);
+    if (debounceValue) queryParamsURL.set("search", debounceValue);
+    if (queryParams.search) queryParamsURL.set("search", queryParams.search);
+    if (queryParams.filterBy)
+      queryParamsURL.set("filterBy", queryParams.filterBy);
+    if (queryParams.filterValue && queryParams.filterValue !== "All")
+      queryParamsURL.set("filterValue", queryParams.filterValue);
+
+    if (queryParams.role && queryParams.role !== "All")
+      queryParamsURL.set("role", queryParams.role);
+    return queryParamsURL.toString();
+  };
+
+  //get value filter
+  const getQueryParamsV1 = (filters: any) => {
+    const queryParams = Object.entries(filters)
+      .filter(([_, value]) => value !== "")
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+    return queryParams;
+  };
+
+  const getQueryParamsV2 = (query: string) => {
+    let queryExample = `http://localhost:8181/api/v1/user/get?`;
+
+    if (queryParams.sortBy) {
+      query += `&sortBy=${queryParams.sortBy}`;
+    }
+    if (queryParams.sortOrder) {
+      query += `&sortOrder=${queryParams.sortOrder}`;
+    }
+    if (debounceValue) {
+      query += `&search=${debounceValue}`;
+    }
+    if (queryParams.filterBy) {
+      query += `&filterBy=${queryParams.filterBy}`;
+    }
+
+    if (queryParams.filterValue === "All") {
+      query += ``;
+    } else {
+      if (queryParams.filterValue) {
+        query += `&filterValue=${queryParams.filterValue}`;
+      }
+    }
+    return query;
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUsers = async () => {
       try {
-        // const queryParams = Object.entries(filters)
-        //   .filter(([_, value]) => value !== "")
-        //   .map(([key, value]) => `${key}=${value}`)
-        //   .join("&");
-
-        // const apiUrl = `http://localhost:8181/api/v1/user/get${
-        //   queryParams ? `?${queryParams}` : ""
-        // }`;
-        const queryParamsURL = new URLSearchParams();
-        if (queryParams.sortBy)
-          queryParamsURL.set("sortBy", queryParams.sortBy);
-        if (queryParams.sortOrder)
-          queryParamsURL.set("sortOrder", queryParams.sortOrder);
-        if (queryParams.search)
-          queryParamsURL.set("search", queryParams.search);
-
-        const apiUrl = `http://localhost:8181/api/v1/user/get?${
-          queryParams.toString() ? `${queryParams.toString()}` : ""
-        }`;
-
-        let query = `http://localhost:8181/api/v1/user/get?`;
-
-        if (queryParams.sortBy) {
-          query += `&sortBy=${queryParams.sortBy}`;
-        }
-        if (queryParams.sortOrder) {
-          query += `&sortOrder=${queryParams.sortOrder}`;
-        }
-        if (debounceValue) {
-          query += `&search=${debounceValue}`;
-        }
-        if (queryParams.filterBy) {
-          query += `&filterBy=${queryParams.filterBy}`;
-        }
-
-        if (queryParams.filterValue === "All") {
-          query += ``;
-        } else {
-          if (queryParams.filterValue) {
-            query += `&filterValue=${queryParams.filterValue}`;
-          }
-        }
-
-        const res = await axios.get(query);
+        const res = await axios.get(
+          `http://localhost:8181/api/v1/user/get/v2?${getQueryParams()}`
+        );
         setUsers(res.data.data);
+        setTotalPages(res.data.paginate.totalPages); //pageSize
+        setLimit(res.data.paginate.limit);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData();
+    fetchUsers();
   }, [queryParams, debounceValue]);
 
   const handleChangeInputParams = (key: any, value: any) => {
     setQueryParams((prevQueryParams) => ({ ...prevQueryParams, [key]: value }));
   };
 
+  const handleChangePage = (currentPage: any) => {
+    setQueryParams({
+      ...queryParams,
+      page: currentPage,
+    });
+  };
+
   //handle query params
 
   //get user and pagination
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [currentLimit] = useState<number>(5);
-  const [totalPages, setTotalPages] = useState(0);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [currentLimit] = useState<number>(5);
+  // const [totalPages, setTotalPages] = useState(0);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const resUser = await userService.getAllUser(currentPage, currentLimit);
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const resUser = await userService.getAllUser(currentPage, currentLimit);
 
-        if (resUser && +resUser.EC === 0) {
-          setListUser(resUser.DT.users);
-          setTotalPages(resUser.DT.totalPages);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchUser();
-  }, [currentPage]);
+  //       if (resUser && +resUser.EC === 0) {
+  //         setListUser(resUser.DT.users);
+  //         setTotalPages(resUser.DT.totalPages);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchUser();
+  // }, [currentPage]);
 
   //doing action
   const handleUpdateUser = (userId: number) => {
@@ -186,24 +210,31 @@ const UserV3 = () => {
           </Button>
         </div>
         <div className="item__control">
-          <div className="item__name">
-            <input type="checkbox" style={{ marginRight: "5px" }} />
-            <span>Show all</span>
+          <div className="item__name" style={{ flexBasis: "36%" }}>
+            <label style={{ marginRight: "5px" }}>Search:</label>
+            <input
+              value={search}
+              onChange={(e: any) => setSearch(e.target.value)}
+              type="text"
+              placeholder="Search..."
+              className="item__input"
+            />
           </div>
-          <div className="item__name">
-            <span style={{ marginRight: "5px" }}>Number of rows</span>
-            <select>
-              <option>5</option>
-              <option>10</option>
-              <option>15</option>
-            </select>
-          </div>
+
           <div className="item__name">
             <label style={{ marginRight: "5px" }}>Sort by role: </label>
-            <select>
+            <select
+              value={queryParams.role}
+              onChange={(e) => handleChangeInputParams("role", e.target.value)}
+            >
               <option>All</option>
-              <option>admin</option>
-              <option>dev</option>
+              {listRole &&
+                listRole.length > 0 &&
+                listRole.map((role, idx) => (
+                  <option value={role.id} key={idx}>
+                    {role.name}
+                  </option>
+                ))}
             </select>
           </div>
 
@@ -220,16 +251,6 @@ const UserV3 = () => {
               <option>Nữ</option>
             </select>
           </div>
-
-          <input
-            // value={filters.search}
-            //onChange={(e) => handleChangeInputParams("search", e.target.value)}
-            value={search}
-            onChange={(e: any) => setSearch(e.target.value)}
-            type="text"
-            placeholder="Search..."
-            className="item__input"
-          />
         </div>
 
         <ViewUser
@@ -237,10 +258,13 @@ const UserV3 = () => {
           users={users}
           onUpdateUser={handleUpdateUser}
           onDeleteUser={handleDeleteUser}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
+          //currentPage={currentPage}
+          //setCurrentPage={setCurrentPage}
+          //currentLimit={currentLimit}
+          currentPage={queryParams.page}
+          handleChangePage={handleChangePage}
+          currentLimit={limit}
           totalPages={totalPages}
-          currentLimit={currentLimit}
           setShow={setShow}
         />
 

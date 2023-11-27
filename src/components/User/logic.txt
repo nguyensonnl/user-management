@@ -1,0 +1,16 @@
+handle query params with api from server
+logic:
+ tạo state lưu các params gửi lên server
+ khi có sự thay đổi thì update params in url api
+
+
+handle query params
+GIải quyết được params khi nào có thì mới show in api
++bug:
+ thay đổi trên url khi state thay đổi
+   get?seach=a&sortBy=createdAt&sortOrder=asc
+   get?seach=ad&sortBy=createdAt&sortOrder=asc
+   get?seach=adm&sortBy=createdAt&sortOrder=asc
+   get?seach=admi&sortBy=createdAt&sortOrder=asc
+   get?seach=admin&sortBy=createdAt&sortOrder=asc
+use debounce

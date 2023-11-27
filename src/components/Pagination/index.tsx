@@ -2,10 +2,11 @@ interface IProps {
   currentPage?: any; // currentPage
   totalPages?: any; // pageSize
   setCurrentPage?: any;
+  onChangePage?: any;
 }
 
 const Pagination = (props: IProps) => {
-  const { totalPages, currentPage, setCurrentPage } = props;
+  const { totalPages, currentPage, setCurrentPage, onChangePage } = props;
 
   let middlePagination;
 
@@ -18,7 +19,8 @@ const Pagination = (props: IProps) => {
             ? "item__pagination__list isactive"
             : "item__pagination__list"
         }
-        onClick={() => setCurrentPage(idx + 1)}
+        //onClick={() => setCurrentPage(idx + 1)}
+        onClick={() => onChangePage(idx + 1)}
       >
         <span>{idx + 1}</span>
       </li>
@@ -31,7 +33,8 @@ const Pagination = (props: IProps) => {
         <ul className="item__pagination">
           <button
             className="item__pagination__list"
-            onClick={() => setCurrentPage(currentPage - 1)}
+            // onClick={() => setCurrentPage(currentPage - 1)}
+            onClick={() => onChangePage(currentPage - 1)}
             disabled={currentPage === 1}
           >
             Privious
@@ -39,7 +42,8 @@ const Pagination = (props: IProps) => {
           {middlePagination}
           <button
             className="item__pagination__list"
-            onClick={() => setCurrentPage(currentPage + 1)}
+            //onClick={() => setCurrentPage(currentPage + 1)}
+            onClick={() => onChangePage(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
             Next

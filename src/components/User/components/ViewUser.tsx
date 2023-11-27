@@ -10,6 +10,7 @@ interface IProps {
   onDeleteUser?: any;
   onUpdateUser?: any;
   setShow?: any;
+  handleChangePage?: any;
 }
 
 const ViewUser = (props: IProps) => {
@@ -22,6 +23,7 @@ const ViewUser = (props: IProps) => {
     onUpdateUser,
     onDeleteUser,
     setShow,
+    handleChangePage,
   } = props;
 
   const handleUpdateUser = (userId: number) => {
@@ -42,6 +44,7 @@ const ViewUser = (props: IProps) => {
             <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Role</th>
+            <th>Gender</th>
             <th>CreatedAt</th>
             <th>Action</th>
           </tr>
@@ -56,6 +59,7 @@ const ViewUser = (props: IProps) => {
                   <td>{item.username}</td>
                   <td>{item.email}</td>
                   <td>{item.Role?.name}</td>
+                  <td>{item.gender}</td>
                   <td>{dayjs(item.createdAt).format("DD/MM/YYYY h:mm A")}</td>
                   <td>
                     <button
@@ -80,7 +84,8 @@ const ViewUser = (props: IProps) => {
         <Pagination
           totalPages={totalPages}
           setCurrentPage={setCurrentPage}
-          currentPage={currentPage}
+          currentPage={+currentPage}
+          onChangePage={handleChangePage}
         />
       </div>
     </div>
