@@ -12,4 +12,9 @@ roleService.createRole = (data:any) =>{
     return axiosClient.post(url, data)
 }
 
+roleService.getRoleV2 = (query: string)=>{
+    const url = `/role/v2?${query}`;
+    return axiosClient.get(url)
+}
+
 export default roleService;

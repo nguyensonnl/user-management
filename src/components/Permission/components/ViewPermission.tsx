@@ -1,15 +1,19 @@
-import React from "react";
-import { IPermission } from "../../../types/role.type";
+import Pagination from "../../Pagination";
+import { IPermission } from "../../../types/permission.type";
 
 interface IProps {
   permissions: IPermission[];
+  handleChangePage?: any;
+  limit?: any;
+  page?: any;
+  totalPages?: any;
 }
 
 const ViewPermission = (props: IProps) => {
-  const { permissions } = props;
+  const { permissions, handleChangePage, limit, page, totalPages } = props;
 
   return (
-    <div className="list__permission">
+    <div className="list__permission item__table">
       <table className="table">
         <thead>
           <tr>
@@ -25,7 +29,7 @@ const ViewPermission = (props: IProps) => {
             permissions.length > 0 &&
             permissions.map((item: any, index: any) => (
               <tr key={index}>
-                <th>{index + 1}</th>
+                <th>{(page - 1) * limit + index + 1}</th>
                 <td>{item.url}</td>
                 <td>{item.description}</td>
                 <td>{item.module}</td>
@@ -35,8 +39,25 @@ const ViewPermission = (props: IProps) => {
                 </td>
               </tr>
             ))}
+
+          {permissions && permissions.length === 0 && (
+            <tr>
+              <td colSpan={5} style={{ textAlign: "center", border: "none" }}>
+                No data available
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
+      <div className="footer">
+        {permissions && permissions.length !== 0 && (
+          <Pagination
+            totalPages={totalPages}
+            currentPage={+page}
+            onChangePage={handleChangePage}
+          />
+        )}
+      </div>
     </div>
   );
 };

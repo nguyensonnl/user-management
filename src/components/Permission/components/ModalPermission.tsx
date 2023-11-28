@@ -7,7 +7,7 @@ interface IProps {
   setOpenModal: () => void;
   onCreate: any;
 }
-const CreatePermission = (props: IProps) => {
+const ModalPermission = (props: IProps) => {
   const { openModal, setOpenModal, onCreate } = props;
 
   const [url, setUrl] = useState<string>("");
@@ -89,4 +89,4 @@ const CreatePermission = (props: IProps) => {
   );
 };
 
-export default CreatePermission;
+export default ModalPermission;

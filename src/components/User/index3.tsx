@@ -203,13 +203,14 @@ const UserV3 = () => {
   return (
     <Layout>
       <div className="user__container">
-        <div className="item__heading">
+        <section className="item__heading">
           <h2>Danh sách người dùng</h2>
           <Button variant="primary" onClick={handleShow}>
             Create new user
           </Button>
-        </div>
-        <div className="item__control">
+        </section>
+
+        <section className="item__control">
           <div className="item__name" style={{ flexBasis: "36%" }}>
             <label style={{ marginRight: "5px" }}>Search:</label>
             <input
@@ -251,7 +252,7 @@ const UserV3 = () => {
               <option>Nữ</option>
             </select>
           </div>
-        </div>
+        </section>
 
         <ViewUser
           // users={listUser}

@@ -9,6 +9,8 @@ import roleService from "../../api/roleService";
 import permisisonService from "../../api/permissionService";
 import Access from "../Access";
 import { ALL_PERMISSIONS } from "../../constants/permisison";
+import useDebounce from "../../hooks/useDebounce";
+import axios from "axios";
 
 /*
 sử dụng useRef để ngăn chặn call api 2 lần
@@ -46,22 +48,63 @@ const Role = () => {
     setOpenModal(false);
   };
 
+  //handling search, filter, pagination
+  const [search, setSearch] = useState<string>("");
+  const debouceValue = useDebounce(search, 300);
+  const [totalPages, setTotolPages] = useState();
+  const [limit, setLimit] = useState();
+  const [queryParams, setQueryParams] = useState({
+    page: "1",
+    limit: "5",
+  });
+
+  const getQueryParams = () => {
+    const queryParamsURL = new URLSearchParams();
+
+    if (queryParams.page && queryParams.limit) {
+      queryParamsURL.set("page", queryParams.page);
+      queryParamsURL.set("limit", queryParams.limit);
+    }
+
+    if (debouceValue) {
+      queryParamsURL.set("search", debouceValue);
+    }
+    return queryParamsURL.toString();
+  };
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8181/api/v1/role/v2?${getQueryParams()}`
+        );
+        setListRole(res.data.data);
+        setTotolPages(res.data.paginate.totalPages);
+        setLimit(res.data.paginate.limit);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchRole();
+  }, [queryParams, debouceValue]);
+
+  const handleChangePage = (currentPage: any) => {
+    setQueryParams({
+      ...queryParams,
+      page: currentPage,
+    });
+  };
+
+  //handling search, filter, pagination
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (stateRef.current === false) {
           stateRef.current = true;
-          const [resRole, resPermission] = await Promise.all([
-            roleService.getRole(),
-            permisisonService.getPermission(),
-          ]);
-          if (
-            resRole &&
-            resRole.EC === 0 &&
-            resPermission &&
-            resPermission.EC === 0
-          ) {
-            setListRole(resRole.DT);
+          const resPermission = await permisisonService.getPermission();
+
+          if (resPermission && resPermission.EC === 0) {
             setListPermission(resPermission.DT);
             //setAssignPermissionToRole(resPermission.DT);
           }
@@ -212,9 +255,9 @@ const Role = () => {
 
   return (
     <Layout>
-      <Access permission={ALL_PERMISSIONS.ROLES.GET_PAGINATE}>
-        <div className="role__page">
-          {/*  
+      {/* <Access permission={ALL_PERMISSIONS.ROLES.GET_PAGINATE}> */}
+      <div className="role__page">
+        {/*  
         <h3>List group</h3>
         <select
           style={{ width: "30%", marginBottom: "10px" }}
@@ -273,32 +316,40 @@ const Role = () => {
         )}
         */}
 
-          <div className="item__heading">
-            <h2>Danh sách vai trò</h2>
-            <Button variant="primary" onClick={handleOpenModal}>
-              Tạo mới vai trò
-            </Button>
-          </div>
+        <div className="item__heading">
+          <h2>Danh sách vai trò</h2>
+          <Button variant="primary" onClick={handleOpenModal}>
+            Tạo mới vai trò
+          </Button>
+        </div>
 
-          <div className="item__control">
-            <input
-              type="text"
-              placeholder="search..."
-              className="item__input"
-            />
-          </div>
-
-          <ViewRole listRole={listRole} />
-
-          <ModalRole
-            openModal={openModal}
-            handleClose={handleClose}
-            //permissionsGroupByModule={result}
-            listPermission={listPermisison}
-            //roleId={roleId}
+        <div className="item__control">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="search..."
+            className="item__input"
           />
         </div>
-      </Access>
+
+        <ViewRole
+          listRole={listRole}
+          totalPages={totalPages}
+          limit={limit}
+          page={queryParams.page}
+          onChangePage={handleChangePage}
+        />
+
+        <ModalRole
+          openModal={openModal}
+          handleClose={handleClose}
+          //permissionsGroupByModule={result}
+          listPermission={listPermisison}
+          //roleId={roleId}
+        />
+      </div>
+      {/* </Access> */}
     </Layout>
   );
 };

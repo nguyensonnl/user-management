@@ -13,6 +13,11 @@ permisisonService.getPermission = () =>{
 //     return axiosClient.post(url, [...role])
 // }
 
+permisisonService.getPermissionV2 = (query:string)=>{
+    const url=`/permission/v2?${query}`;
+    return axiosClient.get(url)
+}
+
 //single permission
 permisisonService.createPermission = (data:any) =>{
     const url = `/permission/create`;

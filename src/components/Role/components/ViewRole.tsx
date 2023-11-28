@@ -1,12 +1,17 @@
 import dayjs from "dayjs";
+import Pagination from "../../Pagination";
 
 interface IProps {
   listRole?: any;
   onUpdate?: any;
+  totalPages?: any;
+  limit?: any;
+  page?: any;
+  onChangePage?: any;
 }
 
 const ViewRole = (props: IProps) => {
-  const { listRole, onUpdate } = props;
+  const { listRole, onUpdate, totalPages, limit, page, onChangePage } = props;
 
   const handleUpdate = (roleId: any) => {
     onUpdate(roleId);
@@ -48,36 +53,12 @@ const ViewRole = (props: IProps) => {
             ))}
         </tbody>
       </table>
-      <div className="list__role__footer">
-        <nav aria-label="Page navigation example">
-          <ul className="pagination">
-            <li className="page-item">
-              <a className="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                1
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                2
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                3
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
+      <div className="footer">
+        <Pagination
+          onChangePage={onChangePage}
+          currentPage={+page}
+          totalPages={totalPages}
+        />
       </div>
     </div>
   );
