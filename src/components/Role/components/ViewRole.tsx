@@ -8,13 +8,25 @@ interface IProps {
   limit?: any;
   page?: any;
   onChangePage?: any;
+  onUpdateRole?: any;
+  setOpenModal?: any;
 }
 
 const ViewRole = (props: IProps) => {
-  const { listRole, onUpdate, totalPages, limit, page, onChangePage } = props;
+  const {
+    listRole,
+    onUpdate,
+    totalPages,
+    limit,
+    page,
+    onChangePage,
+    onUpdateRole,
+    setOpenModal,
+  } = props;
 
-  const handleUpdate = (roleId: any) => {
-    onUpdate(roleId);
+  const handleUpdate = (roleId: number) => {
+    onUpdateRole(roleId);
+    setOpenModal(true);
   };
 
   return (

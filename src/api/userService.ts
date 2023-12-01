@@ -12,6 +12,11 @@ userService.login  = (data:any) =>{
     return axiosClient.post(url, {data});
 }
 
+userService.getUserV2 = (query:string)=>{
+    const url = `/user/v2?${query}`;
+    return axiosClient.get(url);
+}
+
 userService.getAllUser = (page: number, limit: number) =>{
     let url = `/user`;
     

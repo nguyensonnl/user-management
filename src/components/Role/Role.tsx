@@ -10,7 +10,6 @@ import permisisonService from "../../api/permissionService";
 import Access from "../Access";
 import { ALL_PERMISSIONS } from "../../constants/permisison";
 import useDebounce from "../../hooks/useDebounce";
-import axios from "axios";
 
 /*
 sử dụng useRef để ngăn chặn call api 2 lần
@@ -31,14 +30,27 @@ const Role = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [listPermisison, setListPermission] = useState([]);
   const [listRole, setListRole] = useState([]);
-  //const [assignPermissionToRole, setAssignPermissionToRole] = useState([]);
   const stateRef = useRef(false);
-
-  //old code
-  const [selectedGroup, setSelectedGroup] = useState("");
-  const [assignRolesByGroup, setAssignRolesByGroup] = useState([]);
   const [roleId, setRoleId] = useState<number | null>(null);
-  //old code
+
+  useEffect(() => {
+    fetchPermission();
+  }, []);
+
+  const fetchPermission = async () => {
+    try {
+      if (stateRef.current === false) {
+        stateRef.current = true;
+        const resPermission = await permisisonService.getPermission();
+
+        if (resPermission && resPermission.EC === 0) {
+          setListPermission(resPermission.DT);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleOpenModal = () => {
     setOpenModal(!openModal);
@@ -58,6 +70,10 @@ const Role = () => {
     limit: "5",
   });
 
+  useEffect(() => {
+    fetchRole();
+  }, [queryParams, debouceValue]);
+
   const getQueryParams = () => {
     const queryParamsURL = new URLSearchParams();
 
@@ -72,284 +88,68 @@ const Role = () => {
     return queryParamsURL.toString();
   };
 
-  useEffect(() => {
-    const fetchRole = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:8181/api/v1/role/v2?${getQueryParams()}`
-        );
-        setListRole(res.data.data);
-        setTotolPages(res.data.paginate.totalPages);
-        setLimit(res.data.paginate.limit);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchRole();
-  }, [queryParams, debouceValue]);
-
   const handleChangePage = (currentPage: any) => {
     setQueryParams({
       ...queryParams,
       page: currentPage,
     });
   };
-
+  const fetchRole = async () => {
+    try {
+      const query = getQueryParams();
+      const res = await roleService.getRoleV2(query);
+      setListRole(res.data);
+      setTotolPages(res.paginate.totalPages);
+      setLimit(res.paginate.limit);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //handling search, filter, pagination
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (stateRef.current === false) {
-          stateRef.current = true;
-          const resPermission = await permisisonService.getPermission();
-
-          if (resPermission && resPermission.EC === 0) {
-            setListPermission(resPermission.DT);
-            //setAssignPermissionToRole(resPermission.DT);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  //Gom nhóm permisison theo module
-  // const groupByPermission = (data: any) => {
-  //   return _(data)
-  //     .groupBy((x) => x.module)
-  //     .map((value: any, key: any) => {
-  //       return {
-  //         module: key,
-  //         permissions: value,
-  //       };
-  //     })
-  //     .value();
-  // };
-  //const result = groupByPermission(assignPermissionToRole);
-
-  //For update
-  //Lấy role đã lọc theo group
-  const buildDataRolesByGroup = (groupRoles: any, allRoles: any) => {
-    let result: any = [];
-    if (allRoles && allRoles.length > 0) {
-      allRoles.map((role: any) => {
-        let newObject: any = {};
-        newObject.url = role.url;
-        newObject.id = role.id;
-        newObject.description = role.description;
-        newObject.isAssigned = false;
-        if (groupRoles && groupRoles.length > 0) {
-          newObject.isAssigned = groupRoles.some(
-            (item: any) => item.url === newObject.url
-          );
-        }
-        result.push(newObject);
-      });
-    }
-    return result;
+  const handleUpdateRole = (roleId: number) => {
+    setRoleId(roleId);
   };
-
-  //Luôn kiểm tra điều kiện đầu vào rồi mới action
-  //handle select
-  // const handleOnChangeGroup = async (value: any) => {
-  //   setSelectedGroup(value); //id
-  //   if (value) {
-  //     let data = await roleService.getRolesByGroup(value);
-  //     if (data && +data.EC === 0) {
-  //       let result = buildDataRolesByGroup(data.DT.Roles, listPermisison);
-  //       //set lại list role theo group, nếu true thì checked
-  //       setAssignRolesByGroup(result);
-  //     }
-  //   }
-  // };
-
-  //how to multiple checkbox
-  //handle checkbox
-  // const handleSelectRole = (value: any) => {
-  //   const cloneAssignRolesByGroup: any = [...assignRolesByGroup];
-  //   const foundIndex = cloneAssignRolesByGroup.findIndex(
-  //     (item: any) => +item.id === +value
-  //   );
-
-  //   if (foundIndex > -1) {
-  //     cloneAssignRolesByGroup[foundIndex].isAssigned =
-  //       !cloneAssignRolesByGroup[foundIndex].isAssigned;
-  //   }
-  //   setAssignRolesByGroup(cloneAssignRolesByGroup);
-  // };
-
-  //Gán group theo role qua bảng trung gian
-  // const buildDataToSave = () => {
-  //   let result: any = {};
-  //   const cloneAssignRolesByGroup = [...assignRolesByGroup];
-  //   result.groupId = selectedGroup; //id Group
-  //   let groupRolesFilter: any = cloneAssignRolesByGroup.filter(
-  //     (item: any) => item.isAssigned === true
-  //   );
-  //   let finalGroupRoles: any = groupRolesFilter.map((item: any) => {
-  //     let data: any = { groupId: +selectedGroup, roleId: +item.id };
-  //     return data;
-  //   });
-  //   result.groupRoles = finalGroupRoles;
-  //   return result;
-  // };
-
-  // const handleSave = async () => {
-  //   try {
-  //     let data = buildDataToSave();
-  //     console.log(data);
-  //     let res = await roleService.assignRolesToGroup(data);
-  //     if (res && res.EC === 0) {
-  //    alert(res.EM);
-  //       window.location.reload();
-
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  /**
-   * Tạo mới list permission theo role
-   * Tạo mới object thêm thuộc tính isAssigned
-   */
-  const buildDataPermissionByRole = (
-    permissionsByRole: any,
-    listPermisison: any
-  ) => {
-    let result: any = [];
-    if (listPermisison && listPermisison.length > 0) {
-      listPermisison.map((permisison: any) => {
-        let newObject: any = {};
-        newObject.url = permisison.url;
-        newObject.id = permisison.id;
-        newObject.module = permisison.module;
-        newObject.description = permisison.description;
-        newObject.isAssigned = false;
-        if (permissionsByRole && permissionsByRole.length > 0) {
-          newObject.isAssigned = permissionsByRole.some(
-            (item: any) => item.url === newObject.url
-          );
-        }
-        result.push(newObject);
-      });
-    }
-    return result;
-  };
-
-  // const handleUpdate = async (roleId: any) => {
-  //   setRoleId(roleId);
-  //   try {
-  //     const res = await roleService.getRolesByGroup(roleId);
-  //     if (res && +res.EC === 0) {
-  //       let result = buildDataPermissionByRole(res.DT?.Roles, listPermisison);
-  //       //setAssignPermissionToRole(result);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   setOpenModal(true);
-  // };
 
   return (
     <Layout>
-      {/* <Access permission={ALL_PERMISSIONS.ROLES.GET_PAGINATE}> */}
-      <div className="role__page">
-        {/*  
-        <h3>List group</h3>
-        <select
-          style={{ width: "30%", marginBottom: "10px" }}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            handleOnChangeGroup(+e.target.value)
-          }
-        >
-          <option>Choose role</option>
-          {listRole.map((item: any, index) => (
-            <option key={`group-${index}`} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-
-        {selectedGroup && (
-          <div className="perrmission__container">
-            <h3>Assign Role</h3>
-            <div className="list__permission">
-              {assignRolesByGroup &&
-                assignRolesByGroup.length > 0 &&
-                assignRolesByGroup.map((item: any, index) => (
-                  <div
-                    className="permission__content"
-                    key={index}
-                    style={{ fontSize: "18px" }}
-                  >
-                    <input
-                      type="checkbox"
-                      style={{
-                        marginRight: "6px",
-                        width: "18px",
-                        height: "18px",
-                      }}
-                      value={item.id}
-                      checked={item.isAssigned}
-                      onChange={(e) => handleSelectRole(e.target.value)}
-                    />
-                    <span>{item.url}</span>
-                  </div>
-                ))}
-            </div>
-
-            <button
-              style={{
-                outline: "none",
-                border: "1px solid yellow",
-                padding: "3px 10px",
-                backgroundColor: "yellow",
-              }}
-              onClick={() => handleSave()}
-            >
-              Save
-            </button>
+      <Access permission={ALL_PERMISSIONS.ROLES.GET_PAGINATE}>
+        <div className="role__page">
+          <div className="item__heading">
+            <h2>Danh sách vai trò</h2>
+            <Button variant="primary" onClick={handleOpenModal}>
+              Tạo mới vai trò
+            </Button>
           </div>
-        )}
-        */}
 
-        <div className="item__heading">
-          <h2>Danh sách vai trò</h2>
-          <Button variant="primary" onClick={handleOpenModal}>
-            Tạo mới vai trò
-          </Button>
-        </div>
+          <div className="item__control">
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              type="text"
+              placeholder="search..."
+              className="item__input"
+            />
+          </div>
 
-        <div className="item__control">
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            type="text"
-            placeholder="search..."
-            className="item__input"
+          <ViewRole
+            listRole={listRole}
+            totalPages={totalPages}
+            limit={limit}
+            page={queryParams.page}
+            onChangePage={handleChangePage}
+            onUpdateRole={handleUpdateRole}
+            setOpenModal={setOpenModal}
+          />
+
+          <ModalRole
+            openModal={openModal}
+            handleClose={handleClose}
+            listPermission={listPermisison}
+            roleId={roleId}
           />
         </div>
-
-        <ViewRole
-          listRole={listRole}
-          totalPages={totalPages}
-          limit={limit}
-          page={queryParams.page}
-          onChangePage={handleChangePage}
-        />
-
-        <ModalRole
-          openModal={openModal}
-          handleClose={handleClose}
-          //permissionsGroupByModule={result}
-          listPermission={listPermisison}
-          //roleId={roleId}
-        />
-      </div>
-      {/* </Access> */}
+      </Access>
     </Layout>
   );
 };

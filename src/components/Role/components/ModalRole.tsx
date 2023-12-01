@@ -100,9 +100,8 @@ const ModalRole = (props: IProps) => {
 
   const handleSubmitModal = async () => {
     if (roleId) {
-      //update
+      console.log(roleId);
     } else {
-      //create
       const isValid = handleValidaitonInput();
 
       if (isValid) {

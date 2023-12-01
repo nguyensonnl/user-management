@@ -129,12 +129,11 @@ const UserV3 = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8181/api/v1/user/get/v2?${getQueryParams()}`
-        );
-        setUsers(res.data.data);
-        setTotalPages(res.data.paginate.totalPages); //pageSize
-        setLimit(res.data.paginate.limit);
+        const query = getQueryParams();
+        const res = await userService.getUserV2(query);
+        setUsers(res.data);
+        setTotalPages(res.paginate.totalPages); //pageSize
+        setLimit(res.paginate.limit);
       } catch (error) {
         console.log(error);
       }
